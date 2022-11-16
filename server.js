@@ -14,6 +14,8 @@ const app = express();
 
 const port = 3000;
 
+app.set('trust proxy', 1);
+
 app.use(
   cookieSession({
     name: 'session',
@@ -24,7 +26,21 @@ app.use(
 app.set('view engine', 'ejs');
 app.set(path.join(__dirname, './views'));
 
+app.locals.siteName = 'ROUX Meetups';
+
 app.use(express.static(path.join(__dirname, './static')));
+
+app.use(async (req, res, next) => {
+  try {
+    const names = await speakersService.getNames();
+    res.locals.speakerNames = names;
+    // eslint-disable-next-line no-console
+    console.log(res.locals);
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+});
 
 app.use(
   '/',
