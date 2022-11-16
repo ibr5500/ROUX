@@ -27,6 +27,7 @@ app.use(
 );
 
 app.use(bodyParser.urlencoded({ extends: true }));
+app.use(bodyParser.json());
 
 app.set('view engine', 'ejs');
 app.set(path.join(__dirname, './views'));
