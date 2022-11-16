@@ -34,8 +34,6 @@ app.use(async (req, res, next) => {
   try {
     const names = await speakersService.getNames();
     res.locals.speakerNames = names;
-    // eslint-disable-next-line no-console
-    console.log(res.locals);
     return next();
   } catch (err) {
     return next(err);
