@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 const cookieSession = require('cookie-session');
+const createError = require('http-errors');
+
+const bodyParser = require('body-parser');
 
 const FeedbackService = require('./services/FeedbackService');
 const SpeakersService = require('./services/SpeakerService');
@@ -22,6 +25,8 @@ app.use(
     keys: ['HGADnoAD09e320824fcHDJUOSeAA08', 'SKOicjofvwrv8924vnOciOwv82vrvo'],
   })
 );
+
+app.use(bodyParser.urlencoded({ extends: true }));
 
 app.set('view engine', 'ejs');
 app.set(path.join(__dirname, './views'));
@@ -47,6 +52,17 @@ app.use(
     speakersService,
   })
 );
+
+app.use((req, res, next) => next(createError(404, 'The page you are looking for was not found.')));
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  const status = err.status || 500;
+  res.locals.status = status;
+  res.status(status);
+  res.render('error');
+});
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
